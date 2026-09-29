@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('./config/express');
 const { conectarBanco } = require('./database');
 
 const app = express();
