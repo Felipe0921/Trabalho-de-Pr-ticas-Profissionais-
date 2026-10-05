@@ -1,9 +1,5 @@
-const express = require('./config/express');
-const { conectarBanco } = require('./database');
-
-const app = express();
-
-app.use(express.json());
+const app = require('./src/config/express');
+const { mssql } = require('./src/config/database');
 
 app.get('/', (req, res) => {
     res.json({
@@ -13,6 +9,4 @@ app.get('/', (req, res) => {
 
 app.listen(3000, async () => {
     console.log('Servidor rodando em http://localhost:3000');
-
-    await conectarBanco();
 });
