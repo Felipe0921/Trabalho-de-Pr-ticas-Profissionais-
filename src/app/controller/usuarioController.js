@@ -1,5 +1,6 @@
 var db = require('../../config/database.js');
 const UsuarioCRUD = require('../model/Usuario.js');
+const AlunoCRUD = require('p:/59-DesenvSistemas/2026/1o ano/TI123 - Desenvolvimento Internet/PROJNODEJS_59/src/app/model/alunoCRUD.js');
 
 class UsuarioController
 {
@@ -104,4 +105,29 @@ class UsuarioController
                 })
             }
     }
+
+    atualizarUsuario()
+    {
+        return function (request, response)
+        {
+            let dados = request.body
+            console.log("Dados do usuario para atualizar")
+            let id = request.params.id
+            const usuarioCRUD = new UsuarioCRUD(db)
+            usuarioCRUD
+                .atualizaUsuario(id, dados)
+                .then(() => {
+                    console.log("Dados atualizados com sucesso")
+                    response.status(200).end()
+                })
+                .catch ((erro) => {
+                    console.log(erro)
+                    response.status(500).json({
+                        erro: "Falha ao atualizar os dados de usuario"
+                    })
+                })
+        }
+    }
 }
+
+module.exports = UsuarioController;
