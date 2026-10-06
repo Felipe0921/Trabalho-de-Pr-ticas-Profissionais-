@@ -38,7 +38,7 @@ class UsuarioCRUD {
     gerarListagemDeUsuarioPorCPF(cpf)
     {
         return new Promise((resolve, reject) => {
-            var sql = "SELECT * FROM dbo.USUARIO WHERE cps + " +cpf;
+            var sql = "SELECT * FROM dbo.USUARIO WHERE cpf = " +cpf;
             this._db.query(sql, function(erro, recordset){
                 if (erro) {
                     console.log("erro = " + erro);
@@ -61,12 +61,48 @@ class UsuarioCRUD {
             sql += "'" + usuario.celular + "',";
             sql += "'" + usuario.email + "')";
             console.log("Inserido com sucesso" + sql);
-            this._db.query(sql, function(resolve, reject) {
-                
+            this._db.query(sql, function(erro) {
+                if (erro) {
+                    console.log(erro);
+                    return reject("Falha ao inserir usuario" + erro);
+                }
+                resolve();
             })
         })
     }
 
+    atualizaUsuario(cpf, usuario)
+    {
+        return new Promise((resolve, reject) => {
+            var sql = "UPDATE dbo.USUARIO SET cpf ='" + usuario.cpf + "',";
+            sql += "nome_completo ='" + usuario.nome_completo + "',"
+            sql += "celular ='" + usuario.celular + "',";
+            sql += "email ='" + usuario.email + "' WHERE cpf = " + cpf;
+            console.log("Usuario atualizado com seucesso")
+            this._db.query(sql, function(resolve, reject) {
+                if (erro) {
+                    console.log(erro);
+                    return reject("Erro ao atualizar o usuario");
+                }
+                resolve();
+            })
+        })
+    }
+
+    excluirUsuario(cpf)
+    {
+        return new Promise((resolve, reject) => {
+            var sql = "DELETE FROM dbo.USUARIO WHERE cpf = " + cpf;
+            this._db.query(sql, function(erro){
+                if (erro) {
+                    console.log("erro = " + erro)
+                    return reject("Falha ao excluir usuario " + cpf)
+                }
+                console.log("Sucesso ao excluir usuario " + cpf)
+                resolve()
+            })
+        })
+    }
 }
 
 module.exports = UsuarioCRUD;
