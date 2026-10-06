@@ -1,6 +1,5 @@
 var db = require('../../config/database.js');
 const UsuarioCRUD = require('../model/Usuario.js');
-const AlunoCRUD = require('p:/59-DesenvSistemas/2026/1o ano/TI123 - Desenvolvimento Internet/PROJNODEJS_59/src/app/model/alunoCRUD.js');
 
 class UsuarioController
 {
@@ -31,11 +30,11 @@ class UsuarioController
             const idUsuario = request.params.id;
             const usuarioCRUD = new UsuarioCRUD(db);
             usuarioCRUD 
-                .gerarListagemDeUsuarioPorID(id)
+                .gerarListagemDeUsuarioPorID(idUsuario)
                 .then((resultado) => {
                     console.log("Dados (json) de todos os usuarios por id ")
-                    console.log(resultado.request)
-                    response.json(resultado.request)
+                    console.log(resultado.recordset)
+                    response.json(resultado.recordset)
                 })
                 .catch((erro) => {
                     console.log(erro)
@@ -53,11 +52,11 @@ class UsuarioController
             const cpfUsuario = request.params.cpf;
             const usuarioCRUD = new UsuarioCRUD(db);
             usuarioCRUD
-                .gerarListagemDeUsuarioPorCPF()
+                .gerarListagemDeUsuarioPorCPF(cpfUsuario)
                 .then((resultado) => {
                     console.log("Dados (json) do usuario por cpf")
-                    console.log(resultado.request)
-                    response.json(resultado.request)
+                    console.log(resultado.recordset)
+                    response.json(resultado.recordset)
                 })
                 .catch((erro) => {
                     console.log(erro)
@@ -93,13 +92,13 @@ class UsuarioController
             console.log("dados do novo usuario: "+dados)
             const usuarioCRUD = new UsuarioCRUD(db)
             usuarioCRUD 
-                .insereUsuario()
+                .insereUsuario(dados)
                 .then((resposta) => {
                     console.log("Usuario inserido com sucesso")
                     response.status(200).end()
                 })
                 .catch((erro) => {
-                    console.log(500).json({
+                    response.status(500).json({
                         erro: "Erro ao inserir Usuario" 
                     })
                 })
@@ -112,10 +111,10 @@ class UsuarioController
         {
             let dados = request.body
             console.log("Dados do usuario para atualizar")
-            let id = request.params.id
+            let cpf = request.params.cpf
             const usuarioCRUD = new UsuarioCRUD(db)
             usuarioCRUD
-                .atualizaUsuario(id, dados)
+                .atualizaUsuario(cpf, dados)
                 .then(() => {
                     console.log("Dados atualizados com sucesso")
                     response.status(200).end()

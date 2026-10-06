@@ -89,16 +89,16 @@ class UsuarioCRUD {
         });
     }
 
-    excluirUsuario(cpf)
+    excluirUsuario(id)
     {
         return new Promise((resolve, reject) => {
-            var sql = "DELETE FROM dbo.USUARIO WHERE cpf = '" + cpf +"'";
+            var sql = "DELETE FROM dbo.USUARIO WHERE id_usuario = '" + id +"'";
             this._db.query(sql, function(erro){
                 if (erro) {
                     console.log("erro = " + erro)
-                    return reject("Falha ao excluir usuario " + cpf)
+                    return reject("Falha ao excluir usuario " + id)
                 }
-                console.log("Sucesso ao excluir usuario " + cpf)
+                console.log("Sucesso ao excluir usuario " + id)
                 resolve()
             });
         });

@@ -26,5 +26,5 @@ module.exports = (aplicacao) => {
     aplicacao.post("/Usuario", obj_UsuarioController.inserirUsuarioNovo())
 
     // rota PUT atualiza um usuario
-    aplicacao.put("/Usuario", obj_UsuarioController.atualizarUsuario())
+    aplicacao.put("/Usuario/:cpf", obj_UsuarioController.atualizarUsuario())
 }
