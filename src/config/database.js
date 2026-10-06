@@ -3,7 +3,7 @@ const mssql = require("mssql");
 
 // Configuração para conectar ao Banco
 const configuracao = {
-    user : "BD26574",
+    user    : "BD26574",
     password: "BD26574",
     server: "regulus.cotuca.unicamp.br",
     database: "BD26574",

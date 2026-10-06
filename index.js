@@ -1,12 +1,11 @@
 const app = require('./src/config/express');
-const { mssql } = require('./src/config/database');
-
+require('./src/config/database.js')
 app.get('/', (req, res) => {
     res.json({
         mensagem: 'API funcionando!'
     });
 });
 
-app.listen(3000, async () => {
-    console.log('Servidor rodando em http://localhost:3000');
+app.listen(3000, () => {
+    console.log("SERVIDOR RODANDO");
 });

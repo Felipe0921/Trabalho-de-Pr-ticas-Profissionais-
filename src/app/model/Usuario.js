@@ -85,8 +85,8 @@ class UsuarioCRUD {
                     return reject("Erro ao atualizar o usuario");
                 }
                 resolve();
-            })
-        })
+            });
+        });
     }
 
     excluirUsuario(cpf)
@@ -100,8 +100,8 @@ class UsuarioCRUD {
                 }
                 console.log("Sucesso ao excluir usuario " + cpf)
                 resolve()
-            })
-        })
+            });
+        });
     }
 }
 
