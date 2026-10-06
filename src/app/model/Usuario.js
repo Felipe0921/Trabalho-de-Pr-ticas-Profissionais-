@@ -38,7 +38,7 @@ class UsuarioCRUD {
     gerarListagemDeUsuarioPorCPF(cpf)
     {
         return new Promise((resolve, reject) => {
-            var sql = "SELECT * FROM dbo.USUARIO WHERE cpf = " +cpf;
+            var sql = "SELECT * FROM dbo.USUARIO WHERE cpf =  + '"+cpf+"'";
             this._db.query(sql, function(erro, recordset){
                 if (erro) {
                     console.log("erro = " + erro);
@@ -60,7 +60,7 @@ class UsuarioCRUD {
             sql += "'" + usuario.data_nascimento + "',";
             sql += "'" + usuario.celular + "',";
             sql += "'" + usuario.email + "')";
-            console.log("Inserido com sucesso" + sql);
+            console.log("Insert montado " + sql);
             this._db.query(sql, function(erro) {
                 if (erro) {
                     console.log(erro);
@@ -74,12 +74,12 @@ class UsuarioCRUD {
     atualizaUsuario(cpf, usuario)
     {
         return new Promise((resolve, reject) => {
-            var sql = "UPDATE dbo.USUARIO SET cpf ='" + usuario.cpf + "',";
+            var sql = "UPDATE dbo.USUARIO SET ";
             sql += "nome_completo ='" + usuario.nome_completo + "',"
             sql += "celular ='" + usuario.celular + "',";
-            sql += "email ='" + usuario.email + "' WHERE cpf = " + cpf;
-            console.log("Usuario atualizado com seucesso")
-            this._db.query(sql, function(resolve, reject) {
+            sql += "email ='" + usuario.email + "' WHERE cpf = '"+cpf+"'";
+            console.log("Update feito ")
+            this._db.query(sql, function(erro) {
                 if (erro) {
                     console.log(erro);
                     return reject("Erro ao atualizar o usuario");
@@ -92,7 +92,7 @@ class UsuarioCRUD {
     excluirUsuario(cpf)
     {
         return new Promise((resolve, reject) => {
-            var sql = "DELETE FROM dbo.USUARIO WHERE cpf = " + cpf;
+            var sql = "DELETE FROM dbo.USUARIO WHERE cpf = '" + cpf +"'";
             this._db.query(sql, function(erro){
                 if (erro) {
                     console.log("erro = " + erro)
