@@ -76,9 +76,13 @@ class UsuarioController
             usuarioCRUD
                 .excluirUsuario(idUsuario)
                 .then((resultado) => {
-                    console.log("Usuario id = "+idUsuario+"excluido com êxito")
+                    console.log("Usuario id = "+idUsuario+" excluido com êxito")
+                    response.status(200).end()
+                })
+                .catch((erro) => {
+                    console.log("Não foi possivel excluir esse usuario tente novamente")
                     response.status(500).json({
-                        erro: "erro ao excluir Usuario de id = " + idUsuario
+                        erro: "erro ao excluir Usuario: " + idUsuario
                     })
                 })
         }
@@ -94,12 +98,15 @@ class UsuarioController
             usuarioCRUD 
                 .insereUsuario(dados)
                 .then((resposta) => {
-                    console.log("Usuario inserido com sucesso")
-                    response.status(200).end()
+                    console.log("analisando usuario")
+                    response.status(200).json({
+                        mensage: "Dados do novo usuario inseridos com sucesso"
+                    })
                 })
                 .catch((erro) => {
                     response.status(500).json({
-                        erro: "Erro ao inserir Usuario" 
+                        erro: "Erro ao inserir Usuario",
+                        detalhe: erro
                     })
                 })
             }
