@@ -1,16 +1,19 @@
+// Chama o pacote do Banco
 const mssql = require("mssql");
 
+// Configuração para conectar ao Banco
 const configuracao = {
-    user : "BD26559",
-    password: "BD26559",
+    user    : "BD26574",
+    password: "BD26574",
     server: "regulus.cotuca.unicamp.br",
-    database: "26559",
+    database: "BD26574",
     options: {
         encrypt: true,
         trustServerCertificate: true,
     },
 };
 
+// Executa a conexão com o Banco
 mssql.connect(configuracao)
     .then(() => {
         console.log( "Conexão com o banco de dados completo");
@@ -20,4 +23,4 @@ mssql.connect(configuracao)
         console.log("\nErro = " + erro);
     })
 
-    module.exports = mssql;
+module.exports = mssql;

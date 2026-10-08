@@ -1,18 +1,15 @@
-const express = require('./config/express');
-const { conectarBanco } = require('./database');
+const app = require('./src/config/express');
+require('./src/config/database.js')
 
-const app = express();
-
-app.use(express.json());
-
+require('./src/app/routes/usuarioRouters')(app);
+require('./src/app/routes/credencialRouters')(app);
 app.get('/', (req, res) => {
     res.json({
         mensagem: 'API funcionando!'
     });
 });
 
-app.listen(3000, async () => {
-    console.log('Servidor rodando em http://localhost:3000');
-
-    await conectarBanco();
+app.listen(3000, () => {
+    console.log("SERVIDOR RODANDO");
 });
+
