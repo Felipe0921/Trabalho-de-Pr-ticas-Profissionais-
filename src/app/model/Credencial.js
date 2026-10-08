@@ -6,7 +6,7 @@ class CredencialCRUD {
     gerarListagemCredenciais()
     {
         return new Promise((resolve, reject) => {
-            var sql = "SELCT * FROM dbo.CREDENCIAL ORDER BY id_credencial";
+            var sql = "SELECT * FROM dbo.CREDENCIAL ORDER BY id_credencial";
             this._db.query(sql, function(erro, recordset)
             {
                 if(erro) 
@@ -23,7 +23,7 @@ class CredencialCRUD {
     gerarListagemCredenciaisPorID(id)
     {
         return new Promise((resolve, reject)=>{
-            var sql = "SELECT * FROM dbo.CREDENCIAIS WHERE id_usuario" + Id;
+            var sql = "SELECT * FROM dbo.CREDENCIAL WHERE id_usuario =" + id;
             this._db.query(sql, function(erro, recordset)
             {
                 if(erro)
@@ -40,11 +40,12 @@ class CredencialCRUD {
     insereCredencial(credencial)
     {
         return new Promise((resolve, reject) => {
+            console.log("A credencial recebida é " + credencial)
             var sql = "INSERT INTO dbo.CREDENCIAL"
             sql += "(id_usuario, login, senha_hash)";
-            sql += "VALUES ('" + credencial.id_usuario + "',";
+            sql += "VALUES (" + credencial.id_usuario + ",";
             sql += "'" + credencial.login + "',";
-            sql += "'" + credencial.senha.hash +"')";
+            sql += "'" + credencial.senha_hash +"')";
             console.log("Insert montado " + sql);
             this._db.query(sql, function(erro) {
                 if(erro)
@@ -57,12 +58,12 @@ class CredencialCRUD {
         });
     }
 
-    atualizaCredencial(credencial, usuario)
+    atualizaCredencial(id, credencial)
     {
         return new Promise((resolve, reject) => {
-            var sql = "UPDATE dbo.CREDENCIAL SET";
+            var sql = "UPDATE dbo.CREDENCIAL SET ";
                 sql += "login = '" + credencial.login + "',";
-                sql += "celular = " + credencial.senha_hash + "' WHERE '" +usuario+"'";
+                sql += "senha_hash = '" + credencial.senha_hash + "' WHERE id_credencial =" +id
                 console.log("Update feito");
                 this._db.query(sql, function(erro) {
                     if (erro) {
@@ -77,7 +78,7 @@ class CredencialCRUD {
     excluirCredencial(id)
     {
         return new Promise((resolve, reject) => {
-            var sql = "DELETE FROM dbo.CREDENCIAL WHERE id_credencial'" + id + "'";
+            var sql = "DELETE FROM dbo.CREDENCIAL WHERE id_credencial =" + id
             this._db.query(sql, function(erro){
                 if(erro) {
                     console.log(erro);

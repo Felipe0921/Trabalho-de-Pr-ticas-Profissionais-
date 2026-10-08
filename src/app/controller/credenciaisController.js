@@ -26,9 +26,10 @@ class CredencialController
     listarTodasCredenciaisPorId()
     {
         return function(request, response) {
+            const idCredencial = request.params.id
             const credencialCRUD = new CredencialCRUD(db)
             credencialCRUD
-                .gerarListagemCredenciaisPorID()
+                .gerarListagemCredenciaisPorID(idCredencial)
                 .then((resultado) => {
                     console.log("Dados (json) da tabela credencial pelo ID")
                     console.log(resultado.recordset)
@@ -51,14 +52,15 @@ class CredencialController
             console.log("Dados das novas credenciais: " + dados);
             const credencialCRUD = new CredencialCRUD(db);
             credencialCRUD
-                .insereCredencial()
+                .insereCredencial(dados)
                 .then((resultado) => {
                     console.log("Analisando credencial");
                     response.status(200).end();
                 })
                 .catch((erro) => {
                     response.status(500).json({
-                        erro: "Erro ao inserir Credencial"
+                        erro: "Erro ao inserir Credencial",
+                        detalhe: erro
                     });
                 });
         }
@@ -70,10 +72,10 @@ class CredencialController
         {
             let dados = request.body;
             console.log("Dados da credencial para atualizar")
-            let credencial = request.params.credencial;
+            let idcredencial = request.params.id;
             const credencialCRUD = new CredencialCRUD(db);
             credencialCRUD  
-                .atualizaCredencial(credencial, dados)
+                .atualizaCredencial(idcredencial, dados)
                 .then((resultado) => {
                     console.log("Dados a serem atualizados")
                     response.status(200).end();
