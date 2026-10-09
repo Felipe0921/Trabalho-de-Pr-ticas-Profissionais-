@@ -4,9 +4,9 @@ const StatusReservaCRUD = require('../model/StatusReserva.js');
 class StatusReservaController {
     listarTodos() {
         return function (request, response) {
-            const statusreservaCRUD = new StatusReservaCRUD(db);
+            const model = new StatusReservaCRUD(db);
 
-            statusreservaCRUD.listarTodos()
+            model.listarTodos()
                 .then((resultado) => {
                     response.json(resultado.recordset);
                 })
@@ -22,9 +22,9 @@ class StatusReservaController {
     buscarPorID() {
         return function (request, response) {
             const id = request.params.id;
-            const statusreservaCRUD = new StatusReservaCRUD(db);
+            const model = new StatusReservaCRUD(db);
 
-            statusreservaCRUD.buscarPorID(id)
+            model.buscarPorID(id)
                 .then((resultado) => {
                     response.json(resultado.recordset);
                 })
@@ -40,9 +40,9 @@ class StatusReservaController {
     inserir() {
         return function (request, response) {
             const dados = request.body;
-            const statusreservaCRUD = new StatusReservaCRUD(db);
+            const model = new StatusReservaCRUD(db);
 
-            statusreservaCRUD.inserir(dados)
+            model.inserir(dados)
                 .then(() => {
                     response.status(201).json({
                         mensagem: 'Status inserido com sucesso'
@@ -61,9 +61,9 @@ class StatusReservaController {
         return function (request, response) {
             const id = request.params.id;
             const dados = request.body;
-            const statusreservaCRUD = new StatusReservaCRUD(db);
+            const model = new StatusReservaCRUD(db);
 
-            statusreservaCRUD.atualizar(id, dados)
+            model.atualizar(id, dados)
                 .then(() => {
                     response.status(200).json({
                         mensagem: 'Status atualizado com sucesso'
@@ -81,9 +81,9 @@ class StatusReservaController {
     excluir() {
         return function (request, response) {
             const id = request.params.id;
-            const statusreservaCRUD = new StatusReservaCRUD(db);
+            const model = new StatusReservaCRUD(db);
 
-            statusreservaCRUD.excluir(id)
+            model.excluir(id)
                 .then(() => {
                     response.status(200).json({
                         mensagem: 'Status excluído com sucesso'

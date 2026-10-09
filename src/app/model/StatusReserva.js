@@ -5,7 +5,11 @@ class StatusReservaCRUD {
 
     listarTodos() {
         return new Promise((resolve, reject) => {
-            const sql = "SELECT * FROM dbo.STATUS_RESERVA ORDER BY id_status_reserva";
+            const sql = `
+                SELECT *
+                FROM dbo.STATUS_RESERVA
+                ORDER BY id_status_reserva
+            `;
 
             this._db.query(sql, (erro, recordset) => {
                 if (erro) {
@@ -19,7 +23,11 @@ class StatusReservaCRUD {
 
     buscarPorID(id) {
         return new Promise((resolve, reject) => {
-            const sql = "SELECT * FROM dbo.STATUS_RESERVA WHERE id_status_reserva =" + id;
+            const sql = `
+                SELECT *
+                FROM dbo.STATUS_RESERVA
+                WHERE id_status_reserva = ${Number(id)}
+            `;
 
             this._db.query(sql, (erro, recordset) => {
                 if (erro) {
@@ -33,10 +41,15 @@ class StatusReservaCRUD {
 
     inserir(status) {
         return new Promise((resolve, reject) => {
-            var sql = "INSERT INTO dbo.STATUS_RESERVA " 
-            sql += "(nome, descricao)";
-            sql += " VALUES ('" + status.nome + "',"
-            sql += "'" + status.descricao + "')";
+            const sql = `
+                INSERT INTO dbo.STATUS_RESERVA
+                    (nome, descricao, permite_reserva, ativo)
+                VALUES
+                    ('${status.nome}',
+                     '${status.descricao || ""}',
+                     ${status.permite_reserva ? 1 : 0},
+                     ${status.ativo === false ? 0 : 1})
+            `;
 
             this._db.query(sql, (erro, recordset) => {
                 if (erro) {
@@ -50,10 +63,15 @@ class StatusReservaCRUD {
 
     atualizar(id, status) {
         return new Promise((resolve, reject) => {
-            var sql = "UPDATE dbo.STATUS_RESERVA SET ";
-            sql += "nome ='" + status.nome + "',"
-            sql += "descricao ='" + status.descricao + "' WHERE id = '"+id+"'";
-            console.log("Update feito ")
+            const sql = `
+                UPDATE dbo.STATUS_RESERVA
+                SET
+                    nome = '${status.nome}',
+                    descricao = '${status.descricao || ""}',
+                    permite_reserva = ${status.permite_reserva ? 1 : 0},
+                    ativo = ${status.ativo === false ? 0 : 1}
+                WHERE id_status_reserva = ${Number(id)}
+            `;
 
             this._db.query(sql, (erro, recordset) => {
                 if (erro) {
@@ -67,9 +85,12 @@ class StatusReservaCRUD {
 
     excluir(id) {
         return new Promise((resolve, reject) => {
-            var sql = "DELETE FROM dbo.STATUS_RESERVA WHERE id_usuario = " + id;
+            const sql = `
+                DELETE FROM dbo.STATUS_RESERVA
+                WHERE id_status_reserva = ${Number(id)}
+            `;
 
-            this._db.query(sql, function (erro, recordset){
+            this._db.query(sql, (erro, recordset) => {
                 if (erro) {
                     return reject(erro);
                 }
