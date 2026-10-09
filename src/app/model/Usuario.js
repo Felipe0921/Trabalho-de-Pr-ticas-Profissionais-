@@ -92,7 +92,7 @@ class UsuarioCRUD {
     excluirUsuario(id)
     {
         return new Promise((resolve, reject) => {
-            var sql = "DELETE FROM dbo.USUARIO WHERE id_usuario = '" + id +"'";
+            var sql = "DELETE FROM dbo.USUARIO WHERE id_usuario = " + id;
             this._db.query(sql, function(erro){
                 if (erro) {
                     console.log("erro = " + erro)

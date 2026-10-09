@@ -19,10 +19,10 @@ class TipoRecursoCRUD {
         });
     }
 
-    gerarListagemTodosCursosPorID(id)
+    gerarListagemTodosTiposRecursosPorID(id)
     {
         return new Promise((resolve, reject) => {
-            var sql = "SELECT * FROM dbo.TIPO_RECURSO WHERE = "+ id;
+            var sql = "SELECT * FROM dbo.TIPO_RECURSO WHERE id_tipo_recurso = "+ id;
             this._db.query(sql, function(erro, recordset)
             {
                 if (erro) {

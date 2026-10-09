@@ -29,7 +29,7 @@ class TipoRecursoController
             const idtiporecurso = request.params.id;
             const tiporecursoCRUD = new TipoRecursoCRUD(db);
             tiporecursoCRUD
-                .listarTodosTipoRecursoPorID(idtiporecurso)
+                .gerarListagemTodosTiposRecursosPorID(idtiporecurso)
                 .then((resultado) => {
                     console.log("Dados (json) de tipo recursos po ID")
                     console.log(resultado.recordset)
@@ -70,7 +70,7 @@ class TipoRecursoController
     {
         return function (request, response)
         {
-            let dado = request.body
+            let dados = request.body
             console.log("Dados a atualizar")
             let idtiporecurso = request.params.id;
             const tiporecursoCRUD = new TipoRecursoCRUD(db);
