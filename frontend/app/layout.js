@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "ReservaFácil",
-  description: "Sistema de reservas de laboratórios e salas de aula",
+  description: "Sistema de reservas acadêmicas",
 };
 
 export default function RootLayout({ children }) {
@@ -12,3 +12,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
