@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "/api";
 
 async function tratarResposta(resposta, mensagemErro) {
     const dados = await resposta.json();
