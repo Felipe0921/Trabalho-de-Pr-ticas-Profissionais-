@@ -113,4 +113,4 @@ class RecursoController
     }
 }
 
-module.exports = CredencialController;
+module.exports = RecursoController;

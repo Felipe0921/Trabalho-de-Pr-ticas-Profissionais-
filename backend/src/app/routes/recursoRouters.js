@@ -1,4 +1,4 @@
-const RecursoController = require('../controller/credenciaisController');
+const RecursoController = require('../controller/recursoController');
 
 const obj_RecursoController = new RecursoController()
 
