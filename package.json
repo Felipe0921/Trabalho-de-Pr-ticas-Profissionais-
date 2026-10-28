@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Trabalho em dupla para criar um site de reserva de laboratórios e salas de aulas.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,5 +14,14 @@
     "dotenv": "^18.0.4",
     "express": "^5.2.1",
     "mssql": "^12.7.2"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Felipe0921/Trabalho-de-Pr-ticas-Profissionais-.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Felipe0921/Trabalho-de-Pr-ticas-Profissionais-/issues"
+  },
+  "homepage": "https://github.com/Felipe0921/Trabalho-de-Pr-ticas-Profissionais-#readme"
 }

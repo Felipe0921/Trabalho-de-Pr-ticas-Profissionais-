@@ -28,7 +28,44 @@ class SalaCRUD {
             `;
 
             this._db.query(sql, (erro, recordset) => {
-                if (erro) return reject(erro);
+                if (erro) {
+                    return reject(erro);
+                }
+
+                resolve(recordset);
+            });
+        });
+    }
+
+    buscarPorID(id) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT
+                    r.id_recurso,
+                    r.codigo,
+                    r.nome,
+                    r.capacidade,
+                    r.localizacao,
+                    r.ativo,
+                    r.observacao,
+                    s.tipo_sala,
+                    s.possui_projetor,
+                    s.possui_ar_condicionado,
+                    s.observacao AS observacao_sala
+                FROM dbo.RECURSO r
+                INNER JOIN dbo.SALA s
+                    ON s.id_recurso = r.id_recurso
+                INNER JOIN dbo.TIPO_RECURSO tr
+                    ON tr.id_tipo_recurso = r.id_tipo_recurso
+                WHERE tr.nome = 'Sala de aula'
+                  AND r.id_recurso = ${Number(id)}
+            `;
+
+            this._db.query(sql, (erro, recordset) => {
+                if (erro) {
+                    return reject(erro);
+                }
+
                 resolve(recordset);
             });
         });
@@ -40,7 +77,14 @@ class SalaCRUD {
                 DECLARE @id_recurso INT;
 
                 INSERT INTO dbo.RECURSO
-                    (id_tipo_recurso, codigo, nome, capacidade, localizacao, observacao)
+                    (
+                        id_tipo_recurso,
+                        codigo,
+                        nome,
+                        capacidade,
+                        localizacao,
+                        observacao
+                    )
                 SELECT
                     id_tipo_recurso,
                     '${sala.codigo}',
@@ -54,19 +98,69 @@ class SalaCRUD {
                 SET @id_recurso = SCOPE_IDENTITY();
 
                 INSERT INTO dbo.SALA
-                    (id_recurso, tipo_sala, possui_projetor, possui_ar_condicionado, observacao)
+                    (
+                        id_recurso,
+                        tipo_sala,
+                        possui_projetor,
+                        possui_ar_condicionado,
+                        observacao
+                    )
                 VALUES
-                    (@id_recurso,
-                     '${sala.tipo_sala || ""}',
-                     ${sala.possui_projetor ? 1 : 0},
-                     ${sala.possui_ar_condicionado ? 1 : 0},
-                     '${sala.observacao_sala || ""}');
+                    (
+                        @id_recurso,
+                        '${sala.tipo_sala || ""}',
+                        ${sala.possui_projetor ? 1 : 0},
+                        ${sala.possui_ar_condicionado ? 1 : 0},
+                        '${sala.observacao_sala || ""}'
+                    );
 
                 SELECT @id_recurso AS id_recurso;
             `;
 
             this._db.query(sql, (erro, recordset) => {
-                if (erro) return reject(erro);
+                if (erro) {
+                    return reject(erro);
+                }
+
+                resolve(recordset);
+            });
+        });
+    }
+
+    atualizar(id, sala) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE dbo.RECURSO
+                SET
+                    codigo = '${sala.codigo}',
+                    nome = '${sala.nome}',
+                    capacidade = ${Number(sala.capacidade)},
+                    localizacao = '${sala.localizacao}',
+                    observacao = '${sala.observacao || ""}',
+                    ativo = ${sala.ativo === false ? 0 : 1}
+                WHERE id_recurso = ${Number(id)}
+                  AND id_recurso IN (
+                      SELECT id_recurso
+                      FROM dbo.SALA
+                  );
+
+                UPDATE dbo.SALA
+                SET
+                    tipo_sala = '${sala.tipo_sala || ""}',
+                    possui_projetor =
+                        ${sala.possui_projetor ? 1 : 0},
+                    possui_ar_condicionado =
+                        ${sala.possui_ar_condicionado ? 1 : 0},
+                    observacao =
+                        '${sala.observacao_sala || ""}'
+                WHERE id_recurso = ${Number(id)};
+            `;
+
+            this._db.query(sql, (erro, recordset) => {
+                if (erro) {
+                    return reject(erro);
+                }
+
                 resolve(recordset);
             });
         });
@@ -83,7 +177,10 @@ class SalaCRUD {
             `;
 
             this._db.query(sql, (erro, recordset) => {
-                if (erro) return reject(erro);
+                if (erro) {
+                    return reject(erro);
+                }
+
                 resolve(recordset);
             });
         });
@@ -91,3 +188,4 @@ class SalaCRUD {
 }
 
 module.exports = SalaCRUD;
+

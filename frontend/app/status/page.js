@@ -1,33 +1,41 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import {
     listarStatus,
-    cadastrarStatus
+    cadastrarStatus,
+    atualizarStatus,
+    excluirStatus
 } from "../../lib/api";
+
+const formularioInicial = {
+    nome: "",
+    descricao: "",
+    permite_reserva: true,
+    ativo: true
+};
 
 export default function StatusPage() {
     const [status, setStatus] = useState([]);
-    const [carregando, setCarregando] = useState(true);
+    const [formulario, setFormulario] = useState(formularioInicial);
+    const [editando, setEditando] = useState(null);
     const [erro, setErro] = useState("");
     const [mensagem, setMensagem] = useState("");
-
-    const [formulario, setFormulario] = useState({
-        nome: "",
-        descricao: "",
-        permite_reserva: true,
-        ativo: true
-    });
 
     async function carregarStatus() {
         try {
             setErro("");
+
             const dados = await listarStatus();
-            setStatus(Array.isArray(dados) ? dados : []);
+
+            setStatus(
+                Array.isArray(dados)
+                    ? dados
+                    : dados.recordset || []
+            );
         } catch (erro) {
             setErro(erro.message);
-        } finally {
-            setCarregando(false);
         }
     }
 
@@ -44,24 +52,52 @@ export default function StatusPage() {
         });
     }
 
-    async function cadastrar(event) {
+    function editar(item) {
+        setEditando(item.id_status_reserva);
+
+        setFormulario({
+            nome: item.nome || "",
+            descricao: item.descricao || "",
+            permite_reserva: Boolean(item.permite_reserva),
+            ativo: Boolean(item.ativo)
+        });
+    }
+
+    function cancelar() {
+        setEditando(null);
+        setFormulario(formularioInicial);
+    }
+
+    async function salvar(event) {
         event.preventDefault();
 
         try {
             setErro("");
             setMensagem("");
 
-            await cadastrarStatus(formulario);
+            if (editando) {
+                await atualizarStatus(editando, formulario);
+                setMensagem("Status atualizado com sucesso!");
+            } else {
+                await cadastrarStatus(formulario);
+                setMensagem("Status cadastrado com sucesso!");
+            }
 
-            setMensagem("Status cadastrado com sucesso!");
+            cancelar();
+            await carregarStatus();
+        } catch (erro) {
+            setErro(erro.message);
+        }
+    }
 
-            setFormulario({
-                nome: "",
-                descricao: "",
-                permite_reserva: true,
-                ativo: true
-            });
+    async function excluir(id) {
+        if (!window.confirm("Deseja excluir este status?")) {
+            return;
+        }
 
+        try {
+            await excluirStatus(id);
+            setMensagem("Status excluído com sucesso!");
             await carregarStatus();
         } catch (erro) {
             setErro(erro.message);
@@ -71,44 +107,38 @@ export default function StatusPage() {
     return (
         <main className="min-h-screen bg-slate-100 p-6 md:p-10">
             <div className="mx-auto max-w-6xl">
-                <p className="font-semibold text-blue-600">ReservaFácil</p>
-
-                <h1 className="mt-2 text-3xl font-bold text-slate-900">
-                    Status das reservas
+                <h1 className="text-3xl font-bold text-slate-900">
+                    Status de reserva
                 </h1>
 
-                <p className="mt-2 text-slate-600">
-                    Cadastre e consulte os status utilizados no sistema.
-                </p>
-
                 {erro && (
-                    <div className="mt-6 rounded-xl bg-red-100 p-4 text-red-700">
+                    <div className="mt-5 rounded bg-red-100 p-4 text-red-700">
                         {erro}
                     </div>
                 )}
 
                 {mensagem && (
-                    <div className="mt-6 rounded-xl bg-green-100 p-4 text-green-700">
+                    <div className="mt-5 rounded bg-green-100 p-4 text-green-700">
                         {mensagem}
                     </div>
                 )}
 
                 <div className="mt-8 grid gap-6 lg:grid-cols-[350px_1fr]">
                     <form
-                        onSubmit={cadastrar}
-                        className="rounded-2xl bg-white p-6 shadow-sm"
+                        onSubmit={salvar}
+                        className="rounded bg-white p-6 shadow"
                     >
                         <h2 className="text-xl font-bold">
-                            Novo status
+                            {editando ? "Atualizar status" : "Cadastrar status"}
                         </h2>
 
                         <input
                             name="nome"
                             value={formulario.nome}
                             onChange={alterarCampo}
-                            placeholder="Nome do status"
+                            placeholder="Nome"
                             required
-                            className="mt-5 w-full rounded-xl border p-3"
+                            className="mt-5 w-full rounded border p-3"
                         />
 
                         <textarea
@@ -116,7 +146,7 @@ export default function StatusPage() {
                             value={formulario.descricao}
                             onChange={alterarCampo}
                             placeholder="Descrição"
-                            className="mt-4 w-full rounded-xl border p-3"
+                            className="mt-4 w-full rounded border p-3"
                         />
 
                         <label className="mt-4 flex gap-2">
@@ -136,64 +166,82 @@ export default function StatusPage() {
                                 checked={formulario.ativo}
                                 onChange={alterarCampo}
                             />
-                            Status ativo
+                            Ativo
                         </label>
 
-                        <button className="mt-6 w-full rounded-xl bg-blue-600 p-3 font-bold text-white hover:bg-blue-700">
-                            Cadastrar status
+                        <button className="mt-5 w-full rounded bg-blue-600 p-3 font-bold text-white">
+                            {editando ? "Salvar alterações" : "Cadastrar"}
                         </button>
+
+                        {editando && (
+                            <button
+                                type="button"
+                                onClick={cancelar}
+                                className="mt-3 w-full rounded border p-3"
+                            >
+                                Cancelar
+                            </button>
+                        )}
                     </form>
 
-                    <section className="rounded-2xl bg-white p-6 shadow-sm">
+                    <section className="rounded bg-white p-6 shadow">
                         <h2 className="text-xl font-bold">
                             Status cadastrados
                         </h2>
 
-                        {carregando ? (
-                            <p className="mt-5">Carregando...</p>
-                        ) : (
-                            <div className="mt-5 overflow-x-auto">
-                                <table className="w-full text-left">
-                                    <thead>
-                                        <tr className="border-b text-sm text-slate-500">
-                                            <th className="p-3">ID</th>
-                                            <th className="p-3">Nome</th>
-                                            <th className="p-3">Descrição</th>
-                                            <th className="p-3">Ativo</th>
+                        <div className="mt-5 overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className="border-b">
+                                        <th className="p-3">ID</th>
+                                        <th className="p-3">Nome</th>
+                                        <th className="p-3">Descrição</th>
+                                        <th className="p-3">Ações</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {status.map((item) => (
+                                        <tr
+                                            key={item.id_status_reserva}
+                                            className="border-b"
+                                        >
+                                            <td className="p-3">
+                                                {item.id_status_reserva}
+                                            </td>
+
+                                            <td className="p-3">
+                                                {item.nome}
+                                            </td>
+
+                                            <td className="p-3">
+                                                {item.descricao}
+                                            </td>
+
+                                            <td className="flex gap-2 p-3">
+                                                <button
+                                                    onClick={() => editar(item)}
+                                                    className="rounded bg-blue-100 px-3 py-2 text-blue-700"
+                                                >
+                                                    Editar
+                                                </button>
+
+                                                <button
+                                                    onClick={() =>
+                                                        excluir(
+                                                            item.id_status_reserva
+                                                        )
+                                                    }
+                                                    className="rounded bg-red-100 px-3 py-2 text-red-700"
+                                                >
+                                                    Excluir
+                                                </button>
+                                            </td>
                                         </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {status.map((item) => (
-                                            <tr
-                                                key={
-                                                    item.id_status_reserva ||
-                                                    item.id_status
-                                                }
-                                                className="border-b"
-                                            >
-                                                <td className="p-3">
-                                                    {item.id_status_reserva ||
-                                                        item.id_status}
-                                                </td>
-
-                                                <td className="p-3 font-semibold">
-                                                    {item.nome}
-                                                </td>
-
-                                                <td className="p-3">
-                                                    {item.descricao}
-                                                </td>
-
-                                                <td className="p-3">
-                                                    {item.ativo ? "Sim" : "Não"}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </section>
                 </div>
             </div>
