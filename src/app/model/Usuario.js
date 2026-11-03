@@ -1,4 +1,4 @@
-class UsuarioCRUD {
+/*class UsuarioCRUD {
     constructor(db) {
         this._db = db;
     }
@@ -100,6 +100,138 @@ class UsuarioCRUD {
                 }
                 console.log("Sucesso ao excluir usuario " + id)
                 resolve()
+            });
+        });
+    }
+}
+
+module.exports = UsuarioCRUD;
+*/
+
+class UsuarioCRUD {
+    constructor(db) {
+        this._db = db;
+    }
+
+    gerarListagemDeUsuario() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT *
+                FROM dbo.USUARIO
+                ORDER BY id_usuario
+            `;
+
+            this._db.query(sql, (erro, recordset) => {
+                if (erro) {
+                    console.log(erro);
+                    return reject(erro);
+                }
+
+                resolve(recordset);
+            });
+        });
+    }
+
+    gerarListagemDeUsuarioPorID(id) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT *
+                FROM dbo.USUARIO
+                WHERE id_usuario = ${Number(id)}
+            `;
+
+            this._db.query(sql, (erro, recordset) => {
+                if (erro) {
+                    console.log(erro);
+                    return reject(erro);
+                }
+
+                resolve(recordset);
+            });
+        });
+    }
+
+    gerarListagemDeUsuarioPorCPF(cpf) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT *
+                FROM dbo.USUARIO
+                WHERE cpf = '${cpf}'
+            `;
+
+            this._db.query(sql, (erro, recordset) => {
+                if (erro) {
+                    console.log(erro);
+                    return reject(erro);
+                }
+
+                resolve(recordset);
+            });
+        });
+    }
+
+    insereUsuario(usuario) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                INSERT INTO dbo.USUARIO
+                    (cpf, nome_completo, data_nascimento, celular, email)
+                VALUES
+                    (
+                        '${usuario.cpf}',
+                        '${usuario.nome_completo}',
+                        '${usuario.data_nascimento}',
+                        '${usuario.celular}',
+                        '${usuario.email}'
+                    )
+            `;
+
+            this._db.query(sql, (erro, recordset) => {
+                if (erro) {
+                    console.log(erro);
+                    return reject(erro);
+                }
+
+                resolve(recordset);
+            });
+        });
+    }
+
+    atualizaUsuario(cpf, usuario) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE dbo.USUARIO
+                SET
+                    nome_completo = '${usuario.nome_completo}',
+                    celular = '${usuario.celular}',
+                    email = '${usuario.email}'
+                WHERE cpf = '${cpf}'
+            `;
+
+            this._db.query(sql, (erro, recordset) => {
+                if (erro) {
+                    console.log(erro);
+                    return reject(erro);
+                }
+
+                resolve(recordset);
+            });
+        });
+    }
+
+    excluirUsuario(id) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                DELETE FROM dbo.USUARIO
+                WHERE id_usuario = ${Number(id)}
+            `;
+
+            this._db.query(sql, (erro, recordset) => {
+                if (erro) {
+                    console.log(erro);
+                    return reject(erro);
+                }
+
+                resolve(recordset);
             });
         });
     }

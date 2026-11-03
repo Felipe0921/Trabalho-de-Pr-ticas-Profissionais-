@@ -1,27 +1,35 @@
-const CredencialController = require('../controller/credenciaisController');
+const CredencialController = require("../controller/credenciaisController");
 
-const obj_CredencialController = new CredencialController()
+const controller = new CredencialController();
 
 module.exports = (aplicacao) => {
-    aplicacao.use((request, response, next) => {
-        response.header("Access-Control-Allow-Origin", "*")
-        next()
-    })
+    aplicacao.get(
+        "/Credencial",
+        controller.listarTodasCredenciais()
+    );
 
-    //  rotas / endpoints
+    aplicacao.get(
+        "/Credencial/:id",
+        controller.listarTodasCredenciaisPorId()
+    );
 
-    // rotaGET, Listagem de credenciais
-    aplicacao.get("/Credencial", obj_CredencialController.listarTodasCredenciais());
+    aplicacao.post(
+        "/Credencial",
+        controller.inserirCredenciais()
+    );
 
-    // totaGET, listagem de credenciais por ID
-    aplicacao.get("/Credencial/:id", obj_CredencialController.listarTodasCredenciaisPorId());
+    aplicacao.post(
+        "/Login",
+        controller.login()
+    );
 
-    // rota POST insere credenciais
-    aplicacao.post("/Credencial", obj_CredencialController.inserirCredenciais())
+    aplicacao.put(
+        "/Credencial/:id",
+        controller.atualizarCredencial()
+    );
 
-    // rota PUT atualiza credencial
-    aplicacao.put("/Credencial/:id", obj_CredencialController.atualizarCredencial())
-
-    // rota DELETE exclui credenciais
-    aplicacao.delete("/Credencial/:id", obj_CredencialController.excluirCredencial())
-}
+    aplicacao.delete(
+        "/Credencial/:id",
+        controller.excluirCredencial()
+    );
+};

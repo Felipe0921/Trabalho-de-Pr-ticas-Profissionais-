@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "http://127.0.0.1:3000";
 
 async function tratarResposta(resposta, mensagemErro) {
     const texto = await resposta.text();
@@ -9,9 +9,7 @@ async function tratarResposta(resposta, mensagemErro) {
         try {
             dados = JSON.parse(texto);
         } catch {
-            dados = {
-                mensagem: texto
-            };
+            dados = { mensagem: texto };
         }
     }
 
@@ -26,7 +24,7 @@ async function tratarResposta(resposta, mensagemErro) {
     return dados;
 }
 
-// USUARIOS
+/* Usuários */
 
 export async function listarUsuarios() {
     const resposta = await fetch(`${API_URL}/Usuario`);
@@ -34,26 +32,6 @@ export async function listarUsuarios() {
     return tratarResposta(
         resposta,
         "Erro ao buscar usuários"
-    );
-}
-
-export async function buscarUsuarioPorId(id) {
-    const resposta = await fetch(`${API_URL}/Usuario/${id}`);
-
-    return tratarResposta(
-        resposta,
-        "Erro ao buscar usuário por ID"
-    );
-}
-
-export async function buscarUsuarioPorCpf(cpf) {
-    const resposta = await fetch(
-        `${API_URL}/Usuario/cpf/${cpf}`
-    );
-
-    return tratarResposta(
-        resposta,
-        "Erro ao buscar usuário por CPF"
     );
 }
 
@@ -69,6 +47,26 @@ export async function cadastrarUsuario(usuario) {
     return tratarResposta(
         resposta,
         "Erro ao cadastrar usuário"
+    );
+}
+
+export async function buscarUsuarioPorId(id) {
+    const resposta = await fetch(`${API_URL}/Usuario/${id}`);
+
+    return tratarResposta(
+        resposta,
+        "Erro ao buscar usuário"
+    );
+}
+
+export async function buscarUsuarioPorCpf(cpf) {
+    const resposta = await fetch(
+        `${API_URL}/Usuario/cpf/${cpf}`
+    );
+
+    return tratarResposta(
+        resposta,
+        "Erro ao buscar usuário pelo CPF"
     );
 }
 
@@ -104,7 +102,7 @@ export async function excluirUsuario(id) {
     );
 }
 
-//STATUS
+/* Status */
 
 export async function listarStatus() {
     const resposta = await fetch(`${API_URL}/Status`);
@@ -112,15 +110,6 @@ export async function listarStatus() {
     return tratarResposta(
         resposta,
         "Erro ao buscar status"
-    );
-}
-
-export async function buscarStatusPorId(id) {
-    const resposta = await fetch(`${API_URL}/Status/${id}`);
-
-    return tratarResposta(
-        resposta,
-        "Erro ao buscar status por ID"
     );
 }
 
@@ -136,6 +125,15 @@ export async function cadastrarStatus(status) {
     return tratarResposta(
         resposta,
         "Erro ao cadastrar status"
+    );
+}
+
+export async function buscarStatusPorId(id) {
+    const resposta = await fetch(`${API_URL}/Status/${id}`);
+
+    return tratarResposta(
+        resposta,
+        "Erro ao buscar status"
     );
 }
 
@@ -165,7 +163,7 @@ export async function excluirStatus(id) {
     );
 }
 
-//LABORATORIOS
+/* Laboratórios */
 
 export async function listarLaboratorios() {
     const resposta = await fetch(
@@ -175,17 +173,6 @@ export async function listarLaboratorios() {
     return tratarResposta(
         resposta,
         "Erro ao buscar laboratórios"
-    );
-}
-
-export async function buscarLaboratorioPorId(id) {
-    const resposta = await fetch(
-        `${API_URL}/Laboratorio/${id}`
-    );
-
-    return tratarResposta(
-        resposta,
-        "Erro ao buscar laboratório por ID"
     );
 }
 
@@ -207,10 +194,18 @@ export async function cadastrarLaboratorio(laboratorio) {
     );
 }
 
-export async function atualizarLaboratorio(
-    id,
-    laboratorio
-) {
+export async function buscarLaboratorioPorId(id) {
+    const resposta = await fetch(
+        `${API_URL}/Laboratorio/${id}`
+    );
+
+    return tratarResposta(
+        resposta,
+        "Erro ao buscar laboratório"
+    );
+}
+
+export async function atualizarLaboratorio(id, laboratorio) {
     const resposta = await fetch(
         `${API_URL}/Laboratorio/${id}`,
         {
@@ -242,7 +237,7 @@ export async function excluirLaboratorio(id) {
     );
 }
 
-//SALAS
+/* Salas */
 
 export async function listarSalas() {
     const resposta = await fetch(`${API_URL}/Sala`);
@@ -250,17 +245,6 @@ export async function listarSalas() {
     return tratarResposta(
         resposta,
         "Erro ao buscar salas"
-    );
-}
-
-export async function buscarSalaPorId(id) {
-    const resposta = await fetch(
-        `${API_URL}/Sala/${id}`
-    );
-
-    return tratarResposta(
-        resposta,
-        "Erro ao buscar sala por ID"
     );
 }
 
@@ -276,6 +260,15 @@ export async function cadastrarSala(sala) {
     return tratarResposta(
         resposta,
         "Erro ao cadastrar sala"
+    );
+}
+
+export async function buscarSalaPorId(id) {
+    const resposta = await fetch(`${API_URL}/Sala/${id}`);
+
+    return tratarResposta(
+        resposta,
+        "Erro ao buscar sala"
     );
 }
 
@@ -310,6 +303,79 @@ export async function excluirSala(id) {
         "Erro ao excluir sala"
     );
 }
+
+/* Cadastro, login e reservas */
+
+export async function cadastrarConta(dados) {
+    const resposta = await fetch(`${API_URL}/Cadastro`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+    });
+
+    return tratarResposta(
+        resposta,
+        "Erro ao criar conta"
+    );
+}
+
+export async function fazerLogin(dados) {
+    const resposta = await fetch(`${API_URL}/Login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+    });
+
+    return tratarResposta(
+        resposta,
+        "E-mail ou senha inválidos"
+    );
+}
+
+export async function criarReserva(dados) {
+    const resposta = await fetch(`${API_URL}/Reserva`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+    });
+
+    return tratarResposta(
+        resposta,
+        "Erro ao criar reserva"
+    );
+}
+
+export async function listarReservasUsuario(idUsuario) {
+    const resposta = await fetch(
+        `${API_URL}/Reserva/usuario/${idUsuario}`
+    );
+
+    return tratarResposta(
+        resposta,
+        "Erro ao buscar reservas"
+    );
+}
+
+export async function excluirReserva(id) {
+    const resposta = await fetch(
+        `${API_URL}/Reserva/${id}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    return tratarResposta(
+        resposta,
+        "Erro ao cancelar reserva"
+    );
+}
+
 
 
 

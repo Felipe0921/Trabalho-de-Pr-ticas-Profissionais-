@@ -1,115 +1,153 @@
-var db = require('../../config/database.js');
-const CredencialCRUD = require('../model/Credencial.js')
+const db = require("../../config/database.js");
+const CredencialCRUD = require("../model/Credencial.js");
 
-class CredencialController
-{
-    listarTodasCredenciais()
-    {
-        return function(request, response) {
-            const credencialCRUD = new CredencialCRUD(db);
-            credencialCRUD
-                .gerarListagemCredenciais()
+class CredencialController {
+    listarTodasCredenciais() {
+        return function (request, response) {
+            const model = new CredencialCRUD(db);
+
+            model.gerarListagemCredenciais()
                 .then((resultado) => {
-                    console.log("Dados (json) da tabela credencial");
-                    console.log(resultado.recordset);
                     response.json(resultado.recordset);
                 })
                 .catch((erro) => {
-                    console.log(erro)
+                    console.log(erro);
+
                     response.status(500).json({
-                        erro: "erro na listagem de credenciais"
+                        erro: "Erro na listagem de credenciais"
                     });
                 });
-        }
+        };
     }
 
-    listarTodasCredenciaisPorId()
-    {
-        return function(request, response) {
-            const idCredencial = request.params.id
-            const credencialCRUD = new CredencialCRUD(db)
-            credencialCRUD
-                .gerarListagemCredenciaisPorID(idCredencial)
+    listarTodasCredenciaisPorId() {
+        return function (request, response) {
+            const id = request.params.id;
+            const model = new CredencialCRUD(db);
+
+            model.gerarListagemCredenciaisPorID(id)
                 .then((resultado) => {
-                    console.log("Dados (json) da tabela credencial pelo ID")
-                    console.log(resultado.recordset)
-                    response.json(resultado.recordset)
+                    response.json(resultado.recordset);
                 })
                 .catch((erro) => {
                     console.log(erro);
-                    response.status(500).json({
-                        erro: "Erro ao listar credenciais por ID"
-                    })
-                })
-        }
-    }
 
-    inserirCredenciais()
-    {
-        return function(request, response)
-        {
-            let dados = request.body
-            console.log("Dados das novas credenciais: " + dados);
-            const credencialCRUD = new CredencialCRUD(db);
-            credencialCRUD
-                .insereCredencial(dados)
-                .then((resultado) => {
-                    console.log("Analisando credencial");
-                    response.status(200).end();
-                })
-                .catch((erro) => {
                     response.status(500).json({
-                        erro: "Erro ao inserir Credencial",
-                        detalhe: erro
+                        erro: "Erro ao listar credencial por ID"
                     });
                 });
-        }
+        };
     }
 
-    atualizarCredencial()
-    {
-        return function (request, response)
-        {
-            let dados = request.body;
-            console.log("Dados da credencial para atualizar")
-            let idcredencial = request.params.id;
-            const credencialCRUD = new CredencialCRUD(db);
-            credencialCRUD  
-                .atualizaCredencial(idcredencial, dados)
-                .then((resultado) => {
-                    console.log("Dados a serem atualizados")
-                    response.status(200).end();
+    inserirCredenciais() {
+        return function (request, response) {
+            const dados = request.body;
+            const model = new CredencialCRUD(db);
+
+            model.insereCredencial(dados)
+                .then(() => {
+                    response.status(201).json({
+                        mensagem: "Credencial cadastrada com sucesso"
+                    });
                 })
                 .catch((erro) => {
-                    console.log("Erro ao atualizar os dados")
+                    console.log(erro);
+
                     response.status(500).json({
-                        erro: "atualização de credenciais falhou"
+                        erro: "Erro ao inserir credencial"
                     });
                 });
-        }
+        };
     }
 
-    excluirCredencial()
-    {
-        return function (request, response)
-        {
-            const idCredencial = request.params.id;
-            const credencialCRUD = new CredencialCRUD(db);
-            credencialCRUD
-                .excluirCredencial(idCredencial)
+    login() {
+        return function (request, response) {
+            const dados = request.body;
+
+            const loginInformado =
+                dados.login || dados.email;
+
+            const senhaInformada =
+                dados.senha || dados.senha_hash;
+
+            if (!loginInformado || !senhaInformada) {
+                return response.status(400).json({
+                    erro: "Login e senha são obrigatórios"
+                });
+            }
+
+            const model = new CredencialCRUD(db);
+
+            model.autenticar(
+                loginInformado,
+                senhaInformada
+            )
                 .then((resultado) => {
-                    console.log("Vendo exclusao")
+                    if (
+                        !resultado.recordset ||
+                        resultado.recordset.length === 0
+                    ) {
+                        return response.status(401).json({
+                            erro: "Login ou senha inválidos"
+                        });
+                    }
+
                     response.status(200).json({
-                        mensage: "Excluido com êxito"
-                    })
+                        mensagem: "Login realizado com sucesso",
+                        usuario: resultado.recordset[0]
+                    });
                 })
                 .catch((erro) => {
-                    console.log("Não foi possível excluir essa credencial")
+                    console.log(erro);
+
                     response.status(500).json({
-                        erro: "erro ao excluir credencial" + idCredencial
+                        erro: "Erro ao realizar login"
                     });
                 });
-        }
+        };
+    }
+
+    atualizarCredencial() {
+        return function (request, response) {
+            const id = request.params.id;
+            const dados = request.body;
+            const model = new CredencialCRUD(db);
+
+            model.atualizaCredencial(id, dados)
+                .then(() => {
+                    response.status(200).json({
+                        mensagem: "Credencial atualizada com sucesso"
+                    });
+                })
+                .catch((erro) => {
+                    console.log(erro);
+
+                    response.status(500).json({
+                        erro: "Erro ao atualizar credencial"
+                    });
+                });
+        };
+    }
+
+    excluirCredencial() {
+        return function (request, response) {
+            const id = request.params.id;
+            const model = new CredencialCRUD(db);
+
+            model.excluirCredencial(id)
+                .then(() => {
+                    response.status(200).json({
+                        mensagem: "Credencial excluída com sucesso"
+                    });
+                })
+                .catch((erro) => {
+                    console.log(erro);
+
+                    response.status(500).json({
+                        erro: "Erro ao excluir credencial"
+                    });
+                });
+        };
     }
 }
 
