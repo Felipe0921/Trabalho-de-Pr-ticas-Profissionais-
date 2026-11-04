@@ -17,6 +17,10 @@ const formularioInicial = {
     email: ""
 };
 
+/*
+* usuarios guarda a lista que será mostrada na tela
+* setUsuarios altera essa lista
+*/
 export default function UsuariosPage() {
     const [usuarios, setUsuarios] = useState([]);
     const [formulario, setFormulario] = useState(formularioInicial);

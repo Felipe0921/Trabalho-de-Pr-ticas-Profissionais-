@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:3000";
+const API_URL = "http://localhost:3000";
 
 async function tratarResposta(resposta, mensagemErro) {
     const texto = await resposta.text();

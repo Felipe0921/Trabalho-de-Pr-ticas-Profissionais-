@@ -89,7 +89,7 @@ export default function LoginPage() {
                     </p>
 
                     <h2 style={estilos.titulo}>
-                        Bem-vindo de volta
+                        Bem-vindo
                     </h2>
 
                     <p style={estilos.subtitulo}>
